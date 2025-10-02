@@ -8,13 +8,21 @@ void array_check(int arr[], int start, int end)
 {
 	int i;
 
-	printf("start:%d, end:%d\t", start, end);
-	printf("[ ");
+	printf("start:%d, end:%d\t\t\t", start, end);
 
-	for (i = start; i <= end; i ++)
-		printf("%d ", arr[i]);
+	if(end >= start)
+	{
+		printf("[ ");
 
-	printf(" ]\n");
+		for (i = start; i <= end; i ++)
+			printf("%d ", arr[i]);
+
+		printf(" ]\n");
+	}
+	else
+	{
+		printf("INVALID INPUT !!\n");
+	}
 }
 
 void SWAP(int *a, int *b)
@@ -24,49 +32,73 @@ void SWAP(int *a, int *b)
 	*b = temp;
 }
 
-
-int QSORT(int arr[], int start, int end)
+int PivotIndex(int arr[], int start, int end)
 {
-	int i, j, pivot;
+	int i, j, pivot, pivot_idx = start;
 
-	array_check(arr + start, start, end);
+	printf("\n[PivotIndex_init]\n");
+	array_check(arr, start, end);
 
-	if (start >= end)
+	if (end - start == 1)
+	{
+		if (arr[start] > arr[end])
+			SWAP(arr + start, arr + end);
+
 		return start;
+	}
+	else if (start >= end)
+	{
+		return end;
+	}
 
+	pivot = arr[start];
 	i = start + 1;
 	j = end;
-	pivot = arr[start];
 
 	while (i < j)
 	{
-		while ((arr[i] <= pivot) && (i < j))
-			i ++;
+		while ((arr[i] <= pivot) && (i != j))	i++;
+		while ((arr[j] >= pivot) && (j != i))	j--;
 
-		while ((arr[j] >= pivot) && (i < j))
-			j --;
+		//printf("[while_finished] i:%d, j:%d\n", i, j);
 
 		if (i < j)
 		{
 			SWAP(arr + i, arr + j);
 
-			printf("i:%d, j:%d\t", i, j);
+			printf("[CASE i<j, after SWAP] i:%d, j:%d\n", i, j);
 			array_check(arr, start, end);
+
+			i ++;
+			j --;
 		}
 		else
+		{
+			pivot_idx = i;
+			printf("[CASE i==j] i:%d, j:%d, pivot_idx=%d\n", i, j, pivot_idx);
 			break;
+		}
 	}
 
-	SWAP(arr + start, arr + i);
+	return pivot_idx;
+}
 
-	printf("i:%d, j:%d\t", i, j);
-	array_check(arr, start, end);
+void QSORT(int arr[], int start, int end)
+{
+	int pivot_idx = PivotIndex(arr, start, end);
 
+	if(pivot_idx > start)
+	{
+		SWAP(arr + start, arr + pivot_idx);
 
-	QSORT(arr, start, i - 1);
-	QSORT(arr, i + 1, end);
+		printf("[QSORT][AfterSWAP] pivot_idx:%d\n", pivot_idx);
+		array_check(arr, start, end);
 
-	return i;
+		QSORT(arr, start, pivot_idx - 1);
+		QSORT(arr, pivot_idx + 1, end);
+	}
+
+	return;
 }
 
 
@@ -76,7 +108,7 @@ int main(int argc, char **argv)
 
 	printf ("BEFORE \n");
 	array_check(array, 0, 6);
-	
+
 	QSORT(array, 0, 6);
 
 	printf ("\nAFTER \n");
