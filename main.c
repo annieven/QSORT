@@ -117,23 +117,45 @@ int main(int argc, char **argv)
 	return 0;
 }
 
+/*
+annie@ubuntu:/home/share/code/250930_QSORT$ ./a.out
+BEFORE
+start:0, end:6                  [ 5 7 1 3 4 2 6  ]
 
-#define TOTAL_NUMBER	119
-int main_random(int argc, char **argv)
-{
-	int a, b, i;
-	
-	srand(time(NULL));
+[PivotIndex_init]
+start:0, end:6                  [ 5 7 1 3 4 2 6  ]
+[CASE i<j, after SWAP] i:1, j:5
+start:0, end:6                  [ 5 2 1 3 4 7 6  ]
+[CASE i==j] i:4, j:4, pivot_idx=4
+[QSORT][AfterSWAP] pivot_idx:4
+start:0, end:6                  [ 4 2 1 3 5 7 6  ]
 
-	for (i=0; i<1; i++)		/* for verifying srand function */
-	{
-		b = rand();
-		a = (b % TOTAL_NUMBER) +1;	/* start from 1 */
-		printf ("%d ", a);
-		//printf ("(%d) ", b);
-	}
+[PivotIndex_init]
+start:0, end:3                  [ 4 2 1 3  ]
+[CASE i==j] i:3, j:3, pivot_idx=3
+[QSORT][AfterSWAP] pivot_idx:3
+start:0, end:3                  [ 3 2 1 4  ]
 
-	printf("\n");
+[PivotIndex_init]
+start:0, end:2                  [ 3 2 1  ]
+[CASE i==j] i:2, j:2, pivot_idx=2
+[QSORT][AfterSWAP] pivot_idx:2
+start:0, end:2                  [ 1 2 3  ]
 
-	return 0;
-}
+[PivotIndex_init]
+start:0, end:1                  [ 1 2  ]
+
+[PivotIndex_init]
+start:3, end:2                  INVALID INPUT !!
+
+[PivotIndex_init]
+start:4, end:3                  INVALID INPUT !!
+
+[PivotIndex_init]
+start:5, end:6                  [ 7 6  ]
+
+AFTER
+start:0, end:6                  [ 1 2 3 4 5 6 7  ]
+
+*/
+
