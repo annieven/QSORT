@@ -39,17 +39,13 @@ int PivotIndex(int arr[], int start, int end)
 	printf("\n[PivotIndex_init]\n");
 	array_check(arr, start, end);
 
-	if (end - start == 1)
-	{
-		if (arr[start] > arr[end])
-			SWAP(arr + start, arr + end);
-
-		return start;
-	}
-	else if (start >= end)
-	{
+	if (start >= end)
 		return end;
-	}
+	else if (end - start == 1)
+		if (arr[start] > arr[end])
+			return end;
+		else
+			return start;
 
 	pivot = arr[start];
 	i = start + 1;
@@ -60,7 +56,7 @@ int PivotIndex(int arr[], int start, int end)
 		while ((arr[i] <= pivot) && (i != j))	i++;
 		while ((arr[j] >= pivot) && (j != i))	j--;
 
-		//printf("[while_finished] i:%d, j:%d\n", i, j);
+		printf("[while_finished] i:%d, j:%d\n", i, j);
 
 		if (i < j)
 		{
@@ -124,20 +120,24 @@ start:0, end:6                  [ 5 7 1 3 4 2 6  ]
 
 [PivotIndex_init]
 start:0, end:6                  [ 5 7 1 3 4 2 6  ]
+[while_finished] i:1, j:5
 [CASE i<j, after SWAP] i:1, j:5
 start:0, end:6                  [ 5 2 1 3 4 7 6  ]
+[while_finished] i:4, j:4
 [CASE i==j] i:4, j:4, pivot_idx=4
 [QSORT][AfterSWAP] pivot_idx:4
 start:0, end:6                  [ 4 2 1 3 5 7 6  ]
 
 [PivotIndex_init]
 start:0, end:3                  [ 4 2 1 3  ]
+[while_finished] i:3, j:3
 [CASE i==j] i:3, j:3, pivot_idx=3
 [QSORT][AfterSWAP] pivot_idx:3
 start:0, end:3                  [ 3 2 1 4  ]
 
 [PivotIndex_init]
 start:0, end:2                  [ 3 2 1  ]
+[while_finished] i:2, j:2
 [CASE i==j] i:2, j:2, pivot_idx=2
 [QSORT][AfterSWAP] pivot_idx:2
 start:0, end:2                  [ 1 2 3  ]
@@ -153,9 +153,17 @@ start:4, end:3                  INVALID INPUT !!
 
 [PivotIndex_init]
 start:5, end:6                  [ 7 6  ]
+[QSORT][AfterSWAP] pivot_idx:6
+start:5, end:6                  [ 6 7  ]
+
+[PivotIndex_init]
+start:5, end:5                  [ 6  ]
+
+[PivotIndex_init]
+start:7, end:6                  INVALID INPUT !!
 
 AFTER
 start:0, end:6                  [ 1 2 3 4 5 6 7  ]
-
+annie@ubuntu:/home/share/code/250930_QSORT$
 */
 
