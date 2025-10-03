@@ -3,10 +3,12 @@
 #include <string.h>
 #include <time.h>
 
-
-void array_check(int arr[], int start, int end)
+void array_check(char *title, int arr[], int start, int end)
 {
 	int i;
+
+	if (title)
+		printf ("%s\n", title);
 
 	printf("start:%d, end:%d\t\t\t", start, end);
 
@@ -14,10 +16,13 @@ void array_check(int arr[], int start, int end)
 	{
 		printf("[ ");
 
+		for (i = 0; i < start; i ++)
+			printf("  ");
+
 		for (i = start; i <= end; i ++)
 			printf("%d ", arr[i]);
 
-		printf(" ]\n");
+		printf("]\n");
 	}
 	else
 	{
@@ -32,83 +37,52 @@ void SWAP(int *a, int *b)
 	*b = temp;
 }
 
-int PivotIndex(int arr[], int start, int end)
+int partition_hoare(int arr[], int low, int high)
 {
-	int i, j, pivot, pivot_idx = start;
+    int pivot = arr[low];
+    int i = low - 1;
+    int j = high + 1;
 
-	printf("\n[PivotIndex_init]\n");
-	array_check(arr, start, end);
-
-	if (start >= end)
-		return end;
-	else if (end - start == 1)
-		if (arr[start] > arr[end])
-			return end;
-		else
-			return start;
-
-	pivot = arr[start];
-	i = start + 1;
-	j = end;
-
-	while (i < j)
+    while (1)
 	{
-		while ((arr[i] <= pivot) && (i != j))	i++;
-		while ((arr[j] >= pivot) && (j != i))	j--;
-
-		printf("[while_finished] i:%d, j:%d\n", i, j);
-
-		if (i < j)
-		{
-			SWAP(arr + i, arr + j);
-
-			printf("[CASE i<j, after SWAP] i:%d, j:%d\n", i, j);
-			array_check(arr, start, end);
-
-			i ++;
-			j --;
+        do {
+			i++;
 		}
-		else
-		{
-			pivot_idx = i;
-			printf("[CASE i==j] i:%d, j:%d, pivot_idx=%d\n", i, j, pivot_idx);
-			break;
-		}
-	}
+		while (arr[i] < pivot);
 
-	return pivot_idx;
+        do {
+			j--;
+		}
+		while (arr[j] > pivot);
+
+        if (i >= j)
+			return j;
+
+        SWAP(arr + i, arr + j);
+		array_check("SWAP", arr, i, j);
+    }
 }
 
-void QSORT(int arr[], int start, int end)
+void quicksort(int arr[], int low, int high)
 {
-	int pivot_idx = PivotIndex(arr, start, end);
+    if (low >= high)
+		return;
 
-	if(pivot_idx > start)
-	{
-		SWAP(arr + start, arr + pivot_idx);
+    int p = partition_hoare(arr, low, high);
+	printf("p:%d\n", p);
 
-		printf("[QSORT][AfterSWAP] pivot_idx:%d\n", pivot_idx);
-		array_check(arr, start, end);
-
-		QSORT(arr, start, pivot_idx - 1);
-		QSORT(arr, pivot_idx + 1, end);
-	}
-
-	return;
+    quicksort(arr, low, p);
+    quicksort(arr, p + 1, high);
 }
-
 
 int main(int argc, char **argv)
 {
-	int array[7] = {5, 7, 1, 3, 4, 2, 6};
+	int array[] = {5,7,1,3,4,2,6};
+	int n = sizeof(array) / sizeof(array[0]);
 
-	printf ("BEFORE \n");
-	array_check(array, 0, 6);
-
-	QSORT(array, 0, 6);
-
-	printf ("\nAFTER \n");
-	array_check(array, 0, 6);	
+	array_check("BEFORE", array, 0, n-1);
+	quicksort(array, 0, n-1);
+	array_check("AFTER", array, 0, n-1);
 
 	return 0;
 }
@@ -116,54 +90,29 @@ int main(int argc, char **argv)
 /*
 annie@ubuntu:/home/share/code/250930_QSORT$ ./a.out
 BEFORE
-start:0, end:6                  [ 5 7 1 3 4 2 6  ]
-
-[PivotIndex_init]
-start:0, end:6                  [ 5 7 1 3 4 2 6  ]
-[while_finished] i:1, j:5
-[CASE i<j, after SWAP] i:1, j:5
-start:0, end:6                  [ 5 2 1 3 4 7 6  ]
-[while_finished] i:4, j:4
-[CASE i==j] i:4, j:4, pivot_idx=4
-[QSORT][AfterSWAP] pivot_idx:4
-start:0, end:6                  [ 4 2 1 3 5 7 6  ]
-
-[PivotIndex_init]
-start:0, end:3                  [ 4 2 1 3  ]
-[while_finished] i:3, j:3
-[CASE i==j] i:3, j:3, pivot_idx=3
-[QSORT][AfterSWAP] pivot_idx:3
-start:0, end:3                  [ 3 2 1 4  ]
-
-[PivotIndex_init]
-start:0, end:2                  [ 3 2 1  ]
-[while_finished] i:2, j:2
-[CASE i==j] i:2, j:2, pivot_idx=2
-[QSORT][AfterSWAP] pivot_idx:2
-start:0, end:2                  [ 1 2 3  ]
-
-[PivotIndex_init]
-start:0, end:1                  [ 1 2  ]
-
-[PivotIndex_init]
-start:3, end:2                  INVALID INPUT !!
-
-[PivotIndex_init]
-start:4, end:3                  INVALID INPUT !!
-
-[PivotIndex_init]
-start:5, end:6                  [ 7 6  ]
-[QSORT][AfterSWAP] pivot_idx:6
-start:5, end:6                  [ 6 7  ]
-
-[PivotIndex_init]
-start:5, end:5                  [ 6  ]
-
-[PivotIndex_init]
-start:7, end:6                  INVALID INPUT !!
-
+start:0, end:6                  [ 5 7 1 3 4 2 6 ]
+SWAP
+start:0, end:5                  [ 2 7 1 3 4 5 ]
+SWAP
+start:1, end:4                  [   4 1 3 7 ]
+p:3
+SWAP
+start:0, end:2                  [ 1 4 2 ]
+p:0
+SWAP
+start:1, end:3                  [   3 2 4 ]
+p:2
+SWAP
+start:1, end:2                  [   2 3 ]
+p:1
+SWAP
+start:4, end:6                  [         6 5 7 ]
+p:5
+SWAP
+start:4, end:5                  [         5 6 ]
+p:4
 AFTER
-start:0, end:6                  [ 1 2 3 4 5 6 7  ]
+start:0, end:6                  [ 1 2 3 4 5 6 7 ]
 annie@ubuntu:/home/share/code/250930_QSORT$
 */
 
