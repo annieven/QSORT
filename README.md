@@ -1,4 +1,4 @@
-# random
+# QSORT
 
 ## Linux gcc cmd
 	rm random
