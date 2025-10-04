@@ -37,7 +37,7 @@ void SWAP(int *a, int *b)
 	*b = temp;
 }
 
-int partition_hoare(int arr[], int low, int high)
+int partition(int arr[], int low, int high)
 {
     int pivot = arr[low];
     int i = low - 1;
@@ -45,15 +45,8 @@ int partition_hoare(int arr[], int low, int high)
 
     while (1)
 	{
-        do {
-			i++;
-		}
-		while (arr[i] < pivot);
-
-        do {
-			j--;
-		}
-		while (arr[j] > pivot);
+        do {i++;}	while (arr[i] < pivot);
+        do {j--;}	while (arr[j] > pivot);
 
         if (i >= j)
 			return j;
@@ -68,7 +61,7 @@ void quicksort(int arr[], int low, int high)
     if (low >= high)
 		return;
 
-    int p = partition_hoare(arr, low, high);
+    int p = partition(arr, low, high);
 	printf("p:%d\n", p);
 
     quicksort(arr, low, p);
